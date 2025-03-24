@@ -39,7 +39,7 @@ namespace Crud_CC
                     // Optionnel : Afficher un message de succès
                     MessageBox.Show("projet ajouté avec succès.");
 
-                    LoadData();,
+                    LoadData();
                 }
             }
             catch (Exception ex)
