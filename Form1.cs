@@ -136,9 +136,9 @@ namespace Crud_CC
                     MySqlCommand command = new MySqlCommand("UPDATE users SET appellation_projet = @appellation_projet, theme_projet = @theme_projet, date_debut_projet = @date_debut_projet, WHERE id_projet = @id_projet", connect);
 
                     // Ajoutez les paramètres à la commande
-                    command.Parameters.AddWithValue("@appellation_projet", textBox1.Text); // Nom depuis textBox2
-                    command.Parameters.AddWithValue("@theme_projet", textBox2.Text); // Nom d'utilisateur depuis textBox3
-                    command.Parameters.AddWithValue("@date_debut_projet", dateTimePicker1.Text); // E-mail depuis textBox4
+                    command.Parameters.AddWithValue("@appellation_projet", textBox1.Text);
+                    command.Parameters.AddWithValue("@theme_projet", textBox2.Text);
+                    command.Parameters.AddWithValue("@date_debut_projet", dateTimePicker1.Text); 
 
                     // Exécutez la commande
                     int rowsAffected = command.ExecuteNonQuery();
