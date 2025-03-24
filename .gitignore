@@ -1,0 +1,31 @@
+# Fichiers et dossiers générés par Visual Studio
+.vs/
+bin/
+obj/
+
+# Fichiers de configuration et de cache
+*.user
+*.suo
+*.sln.docstates
+*.userprefs
+*.ide
+
+# Fichiers de sauvegarde
+*.bak
+*.tmp
+*.log
+
+# Dossiers de packages NuGet
+packages/
+
+# Dossiers de dépendances
+*.nupkg
+*.snupkg
+
+# Fichiers de publication
+publish/
+
+# Fichiers de configuration d'exécution
+*.exe
+*.dll
+*.pdb
