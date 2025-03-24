@@ -8,15 +8,17 @@ namespace Crud_CC
         public Form1()
         {
             InitializeComponent();
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
+            LoadData();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text))
+            {
+                MessageBox.Show("Veuillez remplir tous les champs.");
+                return;
+            }
+
             string connectString = "Server=localhost;User ID=root;Password='';Database=gestion_projet_cc;AllowZeroDatetime=true;";
             try
             {
@@ -24,29 +26,32 @@ namespace Crud_CC
                 {
                     connect.Open();
 
-                    // Préparez la commande SQL pour l'insertion
-                    MySqlCommand command = new MySqlCommand("INSERT INTO projets (appellation_projet, theme_projet, date_debut_projet) VALUES (@appellation_projet, @theme_projet, @date_debut_projet)", connect);
+                    // Insertion dans la base de données
+                    MySqlCommand command = new MySqlCommand(
+                        "INSERT INTO projets (appellation_projet, theme_projet, date_debut_projet) " +
+                        "VALUES (@appellation_projet, @theme_projet, @date_debut_projet)", connect);
 
-                    // Ajoutez les paramètres à la commande
-                    //command.Parameters.AddWithValue("@id_projet", int.Parse(textBox1.Text));
                     command.Parameters.AddWithValue("@appellation_projet", textBox1.Text);
                     command.Parameters.AddWithValue("@theme_projet", textBox2.Text);
                     command.Parameters.AddWithValue("@date_debut_projet", dateTimePicker1.Value);
 
-                    // Exécutez la commande
                     command.ExecuteNonQuery();
 
-                    // Optionnel : Afficher un message de succès
-                    MessageBox.Show("projet ajouté avec succès.");
+                    // Récupérer l'ID généré par la base (si id_projet est auto-incrémenté)
+                    command.CommandText = "SELECT LAST_INSERT_ID()";
+                    int newId = Convert.ToInt32(command.ExecuteScalar());
 
-                    LoadData();
+                    // Ajouter la nouvelle ligne directement dans le DataGridView
+                    dataGridView1.Rows.Add(newId, textBox1.Text, textBox2.Text, dateTimePicker1.Value);
+
+                    MessageBox.Show("Projet ajouté avec succès.");
                 }
             }
             catch (Exception ex)
             {
-                // Gérer les erreurs
-                MessageBox.Show("Une erreur est survenue : " + ex.Message);
+                MessageBox.Show("Erreur lors de l'ajout : " + ex.Message);
             }
+            LoadData();
         }
 
         private void LoadData()
@@ -57,38 +62,59 @@ namespace Crud_CC
                 using (MySqlConnection connect = new MySqlConnection(connectString))
                 {
                     connect.Open();
-
-                    // Préparez la commande SQL pour récupérer les données
                     MySqlCommand command = new MySqlCommand("SELECT * FROM projets", connect);
-                    MySqlDataAdapter adapter = new MySqlDataAdapter(command);
-                    DataTable dataTable = new DataTable();
-
-                    // Remplissez le DataTable
-                    adapter.Fill(dataTable);
-
-                    // Assignez le DataTable au DataGridView
-                    dataGridView1.DataSource = dataTable;
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        dataGridView1.Rows.Clear(); // Effacer les lignes actuelles pour éviter les doublons
+                        while (reader.Read())
+                        {
+                            dataGridView1.Rows.Add(
+                                reader["id_projet"],
+                                reader["appellation_projet"],
+                                reader["theme_projet"],
+                                reader["date_debut_projet"]
+                            );
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                // Gérer les erreurs
                 MessageBox.Show("Erreur lors du chargement des données : " + ex.Message);
             }
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellContentClick(object sender, EventArgs e)
         {
+            if (dataGridView1.CurrentRow != null)
             {
-                textBox1.Text = dataGridView1.CurrentRow.Cells[1].Value.ToString();
-                textBox2.Text = dataGridView1.CurrentRow.Cells[2].Value.ToString();
-                dateTimePicker1.Text = dataGridView1.CurrentRow.Cells[3].Value.ToString();
+                try
+                {
+                    textBox1.Text = dataGridView1.CurrentRow.Cells[1].Value?.ToString() ?? ""; // appellation_projet
+                    textBox2.Text = dataGridView1.CurrentRow.Cells[2].Value?.ToString() ?? ""; // theme_projet
+                    dateTimePicker1.Value = Convert.ToDateTime(dataGridView1.CurrentRow.Cells[3].Value); // date_debut_projet
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erreur lors de la sélection : " + ex.Message);
+                }
             }
-
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
+            if (dataGridView1.CurrentRow == null)
+            {
+                MessageBox.Show("Veuillez sélectionner un projet à modifier.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text))
+            {
+                MessageBox.Show("Veuillez remplir tous les champs.");
+                return;
+            }
+
             string connectString = "Server=localhost;User ID=root;Password='';Database=gestion_projet_cc;AllowZeroDatetime=true;";
             try
             {
@@ -96,69 +122,87 @@ namespace Crud_CC
                 {
                     connect.Open();
 
-                    // Préparez la commande SQL pour la suppression
-                    MySqlCommand command = new MySqlCommand("DELETE FROM projets WHERE id_projet  = @id_projet ", connect);
+                    // Requête SQL pour mettre à jour
+                    string query = "UPDATE projets SET appellation_projet = @appellation_projet, " +
+                                  "theme_projet = @theme_projet, date_debut_projet = @date_debut_projet " +
+                                  "WHERE id_projet = @id_projet";
+                    MySqlCommand command = new MySqlCommand(query, connect);
 
-                    // Ajoutez le paramètre à la commande
-                    command.Parameters.AddWithValue("@id_projet ", int.Parse()); // ID depuis textBox1
+                    // Récupérer l'ID depuis la ligne sélectionnée
+                    int idProjet = Convert.ToInt32(dataGridView1.CurrentRow.Cells[0].Value);
 
-                    // Exécutez la commande
+                    // Ajouter les paramètres
+                    command.Parameters.AddWithValue("@id_projet", idProjet);
+                    command.Parameters.AddWithValue("@appellation_projet", textBox1.Text);
+                    command.Parameters.AddWithValue("@theme_projet", textBox2.Text);
+                    command.Parameters.AddWithValue("@date_debut_projet", dateTimePicker1.Value);
+
+                    // Exécuter la mise à jour
                     int rowsAffected = command.ExecuteNonQuery();
-
-                    // Vérifiez si une ligne a été supprimée
                     if (rowsAffected > 0)
                     {
-                        MessageBox.Show("Utilisateur supprimé avec succès.");
+                        // Mise à jour réussie dans la base, mettre à jour le DataGridView
+                        dataGridView1.CurrentRow.Cells[1].Value = textBox1.Text; // appellation_projet
+                        dataGridView1.CurrentRow.Cells[2].Value = textBox2.Text; // theme_projet
+                        dataGridView1.CurrentRow.Cells[3].Value = dateTimePicker1.Value; // date_debut_projet
+
+                        MessageBox.Show("Projet modifié avec succès.");
                     }
                     else
                     {
-                        MessageBox.Show("Aucun utilisateur trouvé avec cet ID.");
+                        MessageBox.Show("Aucune modification effectuée. Vérifiez l'ID du projet.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Gérer les erreurs
-                MessageBox.Show("Une erreur est survenue : " + ex.Message);
+                MessageBox.Show("Erreur lors de la mise à jour : " + ex.Message);
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        // Supprimer (button3_Click)
+        private void button2_Click(object sender, EventArgs e)
         {
-            string connectString = "Server=localhost;User ID=root;Password='';Database=gestion_projet_c;AllowZeroDatetime=true;";
+            if (dataGridView1.CurrentRow == null)
+            {
+                MessageBox.Show("Veuillez sélectionner un projet à supprimer.");
+                return;
+            }
+
+            if (MessageBox.Show("Voulez-vous vraiment supprimer ce projet ?", "Confirmation", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return;
+            }
+
+            string connectString = "Server=localhost;User ID=root;Password='';Database=gestion_projet_cc;AllowZeroDatetime=true;";
             try
             {
                 using (MySqlConnection connect = new MySqlConnection(connectString))
                 {
                     connect.Open();
+                    string query = "DELETE FROM projets WHERE id_projet = @id_projet";
+                    MySqlCommand command = new MySqlCommand(query, connect);
 
-                    // Préparez la commande SQL pour la mise à jour
-                    MySqlCommand command = new MySqlCommand("UPDATE users SET appellation_projet = @appellation_projet, theme_projet = @theme_projet, date_debut_projet = @date_debut_projet, WHERE id_projet = @id_projet", connect);
+                    int idProjet = Convert.ToInt32(dataGridView1.CurrentRow.Cells[0].Value);
+                    command.Parameters.AddWithValue("@id_projet", idProjet);
 
-                    // Ajoutez les paramètres à la commande
-                    command.Parameters.AddWithValue("@appellation_projet", textBox1.Text);
-                    command.Parameters.AddWithValue("@theme_projet", textBox2.Text);
-                    command.Parameters.AddWithValue("@date_debut_projet", dateTimePicker1.Text); 
-
-                    // Exécutez la commande
                     int rowsAffected = command.ExecuteNonQuery();
-
-                    // Vérifiez si une ligne a été mise à jour
                     if (rowsAffected > 0)
                     {
-                        MessageBox.Show("Utilisateur mis à jour avec succès.");
+                        dataGridView1.Rows.Remove(dataGridView1.CurrentRow);
+                        MessageBox.Show("Projet supprimé avec succès.");
                     }
                     else
                     {
-                        MessageBox.Show("Aucun utilisateur trouvé avec cet ID.");
+                        MessageBox.Show("Aucune suppression effectuée.");
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Gérer les erreurs
-                MessageBox.Show("Une erreur est survenue : " + ex.Message);
+                MessageBox.Show("Erreur lors de la suppression : " + ex.Message);
             }
         }
+
     }
 }
