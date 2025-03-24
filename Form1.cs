@@ -89,7 +89,7 @@ namespace Crud_CC
 
         private void button2_Click(object sender, EventArgs e)
         {
-            string connectString = "Server=localhost;User ID=root;Password='';Database=crud-cshap;AllowZeroDatetime=true;";
+            string connectString = "Server=localhost;User ID=root;Password='';Database=gestion_projet_cc;AllowZeroDatetime=true;";
             try
             {
                 using (MySqlConnection connect = new MySqlConnection(connectString))
@@ -97,10 +97,10 @@ namespace Crud_CC
                     connect.Open();
 
                     // Préparez la commande SQL pour la suppression
-                    MySqlCommand command = new MySqlCommand("DELETE FROM users WHERE id = @id", connect);
+                    MySqlCommand command = new MySqlCommand("DELETE FROM projets WHERE id_projet  = @id_projet ", connect);
 
                     // Ajoutez le paramètre à la commande
-                    command.Parameters.AddWithValue("@id", int.Parse(textBox1.Text)); // ID depuis textBox1
+                    command.Parameters.AddWithValue("@id_projet ", int.Parse()); // ID depuis textBox1
 
                     // Exécutez la commande
                     int rowsAffected = command.ExecuteNonQuery();
@@ -125,7 +125,7 @@ namespace Crud_CC
 
         private void button3_Click(object sender, EventArgs e)
         {
-            string connectString = "Server=localhost;User ID=root;Password='';Database=crud-cshap;AllowZeroDatetime=true;";
+            string connectString = "Server=localhost;User ID=root;Password='';Database=gestion_projet_c;AllowZeroDatetime=true;";
             try
             {
                 using (MySqlConnection connect = new MySqlConnection(connectString))
@@ -136,11 +136,10 @@ namespace Crud_CC
                     MySqlCommand command = new MySqlCommand("UPDATE users SET name = @name, userName = @userName, email = @email, password = @password WHERE id = @id", connect);
 
                     // Ajoutez les paramètres à la commande
-                    command.Parameters.AddWithValue("@id", int.Parse(textBox1.Text)); // ID depuis textBox1
-                    command.Parameters.AddWithValue("@name", textBox2.Text); // Nom depuis textBox2
-                    command.Parameters.AddWithValue("@userName", textBox3.Text); // Nom d'utilisateur depuis textBox3
-                    command.Parameters.AddWithValue("@email", textBox4.Text); // E-mail depuis textBox4
-                    command.Parameters.AddWithValue("@password", textBox5.Text); // Mot de passe depuis textBox5
+                    //command.Parameters.AddWithValue("@id", int.Parse(textBox1.Text)); // ID depuis textBox1
+                    command.Parameters.AddWithValue("@name", textBox1.Text); // Nom depuis textBox2
+                    command.Parameters.AddWithValue("@userName", textBox2.Text); // Nom d'utilisateur depuis textBox3
+                    command.Parameters.AddWithValue("@email", textBox3.Text); // E-mail depuis textBox4
 
                     // Exécutez la commande
                     int rowsAffected = command.ExecuteNonQuery();
