@@ -49,33 +49,33 @@ namespace Crud_CC
             }
         }
 
-        //private void LoadData()
-        //{
-        //    string connectString = "Server=localhost;User ID=root;Password='';Database=gestion_projet_cc;AllowZeroDatetime=true;";
-        //    try
-        //    {
-        //        using (MySqlConnection connect = new MySqlConnection(connectString))
-        //        {
-        //            connect.Open();
+        private void LoadData()
+        {
+            string connectString = "Server=localhost;User ID=root;Password='';Database=gestion_projet_cc;AllowZeroDatetime=true;";
+            try
+            {
+                using (MySqlConnection connect = new MySqlConnection(connectString))
+                {
+                    connect.Open();
 
-        //            // Préparez la commande SQL pour récupérer les données
-        //            MySqlCommand command = new MySqlCommand("SELECT * FROM projets", connect);
-        //            MySqlDataAdapter adapter = new MySqlDataAdapter(command);
-        //            DataTable dataTable = new DataTable();
+                    // Préparez la commande SQL pour récupérer les données
+                    MySqlCommand command = new MySqlCommand("SELECT * FROM projets", connect);
+                    MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
 
-        //            // Remplissez le DataTable
-        //            adapter.Fill(dataTable);
+                    // Remplissez le DataTable
+                    adapter.Fill(dataTable);
 
-        //            // Assignez le DataTable au DataGridView
-        //            dataGridView1.DataSource = dataTable;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Gérer les erreurs
-        //        MessageBox.Show("Erreur lors du chargement des données : " + ex.Message);
-        //    }
-        //}
+                    // Assignez le DataTable au DataGridView
+                    dataGridView1.DataSource = dataTable;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Gérer les erreurs
+                MessageBox.Show("Erreur lors du chargement des données : " + ex.Message);
+            }
+        }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
