@@ -122,5 +122,10 @@ namespace Crud_CC
                 MessageBox.Show("Une erreur est survenue : " + ex.Message);
             }
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

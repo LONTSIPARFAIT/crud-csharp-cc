@@ -163,6 +163,7 @@
             button3.TabIndex = 11;
             button3.Text = "Update";
             button3.UseVisualStyleBackColor = false;
+            button3.Click += button3_Click;
             // 
             // Form1
             // 
