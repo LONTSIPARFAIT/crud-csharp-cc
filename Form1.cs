@@ -125,7 +125,42 @@ namespace Crud_CC
 
         private void button3_Click(object sender, EventArgs e)
         {
+            string connectString = "Server=localhost;User ID=root;Password='';Database=crud-cshap;AllowZeroDatetime=true;";
+            try
+            {
+                using (MySqlConnection connect = new MySqlConnection(connectString))
+                {
+                    connect.Open();
 
+                    // Préparez la commande SQL pour la mise à jour
+                    MySqlCommand command = new MySqlCommand("UPDATE users SET name = @name, userName = @userName, email = @email, password = @password WHERE id = @id", connect);
+
+                    // Ajoutez les paramètres à la commande
+                    command.Parameters.AddWithValue("@id", int.Parse(textBox1.Text)); // ID depuis textBox1
+                    command.Parameters.AddWithValue("@name", textBox2.Text); // Nom depuis textBox2
+                    command.Parameters.AddWithValue("@userName", textBox3.Text); // Nom d'utilisateur depuis textBox3
+                    command.Parameters.AddWithValue("@email", textBox4.Text); // E-mail depuis textBox4
+                    command.Parameters.AddWithValue("@password", textBox5.Text); // Mot de passe depuis textBox5
+
+                    // Exécutez la commande
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    // Vérifiez si une ligne a été mise à jour
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Utilisateur mis à jour avec succès.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Aucun utilisateur trouvé avec cet ID.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Gérer les erreurs
+                MessageBox.Show("Une erreur est survenue : " + ex.Message);
+            }
         }
     }
 }
