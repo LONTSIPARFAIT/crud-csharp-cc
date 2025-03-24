@@ -38,6 +38,8 @@
             dateTimePicker1 = new DateTimePicker();
             button2 = new Button();
             dataGridView1 = new DataGridView();
+            mySqlCommandBuilder1 = new MySqlConnector.MySqlCommandBuilder();
+            button3 = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -102,9 +104,9 @@
             button1.BackColor = Color.Red;
             button1.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button1.ForeColor = SystemColors.ButtonHighlight;
-            button1.Location = new Point(166, 407);
+            button1.Location = new Point(52, 364);
             button1.Name = "button1";
-            button1.Size = new Size(237, 61);
+            button1.Size = new Size(132, 60);
             button1.TabIndex = 7;
             button1.Text = "Creer\r\n";
             button1.UseVisualStyleBackColor = false;
@@ -122,11 +124,11 @@
             button2.BackColor = Color.FromArgb(0, 192, 0);
             button2.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button2.ForeColor = SystemColors.ButtonHighlight;
-            button2.Location = new Point(462, 407);
+            button2.Location = new Point(210, 366);
             button2.Name = "button2";
-            button2.Size = new Size(225, 61);
+            button2.Size = new Size(122, 61);
             button2.TabIndex = 9;
-            button2.Text = "Voir";
+            button2.Text = "Delete";
             button2.UseVisualStyleBackColor = false;
             // 
             // dataGridView1
@@ -143,12 +145,31 @@
             dataGridView1.Size = new Size(423, 212);
             dataGridView1.TabIndex = 10;
             // 
+            // mySqlCommandBuilder1
+            // 
+            mySqlCommandBuilder1.DataAdapter = null;
+            mySqlCommandBuilder1.QuotePrefix = "`";
+            mySqlCommandBuilder1.QuoteSuffix = "`";
+            // 
+            // button3
+            // 
+            button3.BackColor = Color.FromArgb(192, 192, 0);
+            button3.Font = new Font("Segoe UI", 11F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button3.ForeColor = SystemColors.ButtonHighlight;
+            button3.Location = new Point(362, 366);
+            button3.Name = "button3";
+            button3.Size = new Size(120, 60);
+            button3.TabIndex = 11;
+            button3.Text = "Update";
+            button3.UseVisualStyleBackColor = false;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(192, 192, 255);
-            ClientSize = new Size(1077, 511);
+            ClientSize = new Size(1077, 454);
+            Controls.Add(button3);
             Controls.Add(dataGridView1);
             Controls.Add(button2);
             Controls.Add(dateTimePicker1);
@@ -178,5 +199,7 @@
         private DateTimePicker dateTimePicker1;
         private Button button2;
         private DataGridView dataGridView1;
+        private MySqlConnector.MySqlCommandBuilder mySqlCommandBuilder1;
+        private Button button3;
     }
 }
