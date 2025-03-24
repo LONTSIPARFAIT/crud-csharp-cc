@@ -86,5 +86,41 @@ namespace Crud_CC
             }
 
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string connectString = "Server=localhost;User ID=root;Password='';Database=crud-cshap;AllowZeroDatetime=true;";
+            try
+            {
+                using (MySqlConnection connect = new MySqlConnection(connectString))
+                {
+                    connect.Open();
+
+                    // Préparez la commande SQL pour la suppression
+                    MySqlCommand command = new MySqlCommand("DELETE FROM users WHERE id = @id", connect);
+
+                    // Ajoutez le paramètre à la commande
+                    command.Parameters.AddWithValue("@id", int.Parse(textBox1.Text)); // ID depuis textBox1
+
+                    // Exécutez la commande
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    // Vérifiez si une ligne a été supprimée
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show("Utilisateur supprimé avec succès.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Aucun utilisateur trouvé avec cet ID.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Gérer les erreurs
+                MessageBox.Show("Une erreur est survenue : " + ex.Message);
+            }
+        }
     }
 }
